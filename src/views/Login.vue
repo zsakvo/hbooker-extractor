@@ -2,7 +2,7 @@
   <div class="login-wrapper">
     <div class="login">
       <div class="login-title">
-        Hbooker Extractor
+        HBooker Extractor
       </div>
       <at-input
         v-model="account"

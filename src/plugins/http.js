@@ -85,12 +85,14 @@ function get(options, final) {
       })
       .catch(err => {
         this.$Notify.error({
-          title: "这里是标题",
-          message: "这里是内容，文案~~~"
+          title: "错误",
+          message: err.message
         });
         reject(err);
       })
-      .finally(final());
+      .finally(() => {
+        if (final != null) final();
+      });
   });
 }
 
@@ -125,13 +127,15 @@ function post(obj, final) {
         },
         err => {
           this.$Notify.error({
-            title: "这里是标题",
-            message: "这里是内容，文案~~~"
+            title: "错误",
+            message: err.message
           });
           reject(err);
         }
       )
-      .finally(final());
+      .finally(() => {
+        if (final != null) final();
+      });
   });
 }
 
