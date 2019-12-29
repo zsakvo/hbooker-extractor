@@ -28,9 +28,9 @@
         <img :src="avatarImage" />
       </div>
     </div>
-    <div class="books-wrapper">
+    <div class="books-wrapper" ref="wrapper">
       <div class="book-wrapper" v-for="(book, index) in books" :key="index">
-        <div class="book" @click="clickBook(book)">
+        <div class="book" @click="clickBook(book)" v-if="book.book_info != 0">
           <img :src="book.book_info.cover" alt="" />
           <div class="book-info">
             <div class="book-name">
@@ -92,7 +92,22 @@ export default {
           order: "last_read_time"
         }
       }).then(res => {
-        this.books = res.book_list;
+        let books = res.book_list;
+        let bookNum = res.book_list.length;
+        let wrapperWidth = this.$refs.wrapper.clientWidth - 207;
+        let itemWidth = 444;
+        let max = parseInt(wrapperWidth / itemWidth);
+        let addNum = max - (bookNum % max);
+        for (var i = 0; i < addNum; i++) {
+          books = [
+            ...books,
+            {
+              book_info: 0
+            }
+          ];
+        }
+        console.log(books);
+        this.books = books;
       });
     });
   },
@@ -229,11 +244,15 @@ export default {
   .books-wrapper{
     user-select none
     padding 0 96px
-    display: grid;
+    display: flex;
+    flex-wrap wrap
+    justify-content space-between
     width 100%
-    grid-template-columns: 50% 50%
+    // grid-template-columns: 50% 50%
     .book-wrapper{
       height 200px
+      width 420px
+      margin 0 12px
       display flex
       align-items center
       .book{
@@ -265,14 +284,14 @@ export default {
         }
       }
     }
-    .book-wrapper:nth-child(n){
-      justify-content flex-end
-      padding-right 96px
-    }
-    .book-wrapper:nth-child(2n){
-      justify-content flex-start
-      padding-left 96px
-    }
+    // .book-wrapper:nth-child(n){
+    //   justify-content flex-end
+    //   padding-right 96px
+    // }
+    // .book-wrapper:nth-child(2n){
+    //   justify-content flex-start
+    //   padding-left 96px
+    // }
   }
 }
 </style>
