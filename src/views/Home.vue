@@ -3,9 +3,9 @@
     <at-modal
       v-model="modal"
       :title="dlName"
-      :maskClosable="true"
-      :showClose="false"
+      :maskClosable="false"
       :closeOnPressEsc="false"
+      :showClose="canDl"
     >
       <div>
         <div class="dl-info">
