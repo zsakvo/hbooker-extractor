@@ -21,10 +21,10 @@
       </div>
     </at-modal>
     <div class="nav-wrapper">
-      <div class="title">
+      <div class="title" @click="goGit">
         HBooker Extractor
       </div>
-      <div class="avatar-wrapper">
+      <div class="avatar-wrapper" @click="goLogin">
         <img :src="avatarImage" />
       </div>
     </div>
@@ -129,6 +129,12 @@ export default {
     };
   },
   methods: {
+    goLogin() {
+      this.$router.push("/login");
+    },
+    goGit() {
+      window.open("https://github.com/zsakvo/hbooker-extractor");
+    },
     async clickBook(book) {
       let that = this;
       that.canDl = false;
@@ -136,6 +142,7 @@ export default {
       this.chapterNum = 0;
       this.dlName = book.book_info.book_name;
       that.chapterNum = 0;
+      that.dlProgressText = "";
       this.modal = true;
       //获取书籍 ID
       let bid = book.book_info.book_id;
@@ -170,6 +177,7 @@ export default {
             that.canDl = true;
             that.dlButton = "下载到本地";
             that.dlBook();
+            worker.terminate();
             break;
         }
       };
@@ -231,6 +239,9 @@ export default {
     font-size 18px
     font-weight 600
     padding 24px 48px
+    .title{
+      cursor pointer
+    }
     .avatar-wrapper{
       width 50px
       height 50px
