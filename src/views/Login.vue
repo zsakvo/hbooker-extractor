@@ -54,14 +54,13 @@ export default {
         }
       ).then(
         res => {
-          console.log(res);
           localStorage.setItem("account", this.account);
           localStorage.setItem("password", this.password);
           localStorage.setItem("accountInfo", JSON.stringify(res));
           this.$router.push("/");
         },
+        // eslint-disable-next-line no-unused-vars
         err => {
-          console.log(err);
           this.canLogin = false;
         },
         () => {
