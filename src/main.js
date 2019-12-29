@@ -1,7 +1,6 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import store from "./store";
 import "./plugins/at";
 import installHttp from "./plugins/http";
 import decrypt from "./plugins/decrypt";
@@ -13,6 +12,5 @@ Vue.prototype.$dcy = decrypt;
 
 new Vue({
   router,
-  store,
   render: h => h(App)
 }).$mount("#app");
