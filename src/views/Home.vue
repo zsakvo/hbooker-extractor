@@ -62,6 +62,10 @@ export default {
   created() {
     //获取本地用户信息
     var accountInfo = localStorage.getItem("accountInfo");
+    if (accountInfo == null) {
+      this.$router.push("/login");
+      return;
+    }
     var accountJson = JSON.parse(accountInfo);
     var readInfo = accountJson.reader_info;
     var avatarImage = readInfo.avatar_url;
@@ -262,10 +266,12 @@ export default {
       }
     }
     .book-wrapper:nth-child(n){
-      justify-content flex-start
+      justify-content flex-end
+      padding-right 96px
     }
     .book-wrapper:nth-child(2n){
-      justify-content flex-end
+      justify-content flex-start
+      padding-left 96px
     }
   }
 }
