@@ -106,7 +106,6 @@ export default {
             }
           ];
         }
-        console.log(books);
         this.books = books;
       });
     });
@@ -170,6 +169,7 @@ export default {
             that.dlUrl = URL.createObjectURL(blob);
             that.canDl = true;
             that.dlButton = "下载到本地";
+            that.dlBook();
             break;
         }
       };

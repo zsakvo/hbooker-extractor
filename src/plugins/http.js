@@ -114,7 +114,6 @@ function post(obj, final) {
           let json = JSON.parse(data);
           switch (json.code) {
             case 100000:
-              console.log("成功");
               resolve(json.data);
               break;
             default:
