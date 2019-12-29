@@ -4,7 +4,7 @@ const mixin = {
   baseUrl: "http://127.0.0.1:9527/api", //url前缀
   standardFlag: true,
   timeout: 15000,
-  withCredentials: true //跨域请求是否使用凭证
+  withCredentials: false //跨域请求是否使用凭证
 };
 
 const para = {
@@ -73,7 +73,7 @@ function get(options, final) {
         let json = JSON.parse(data);
         switch (json.code) {
           case 100000:
-            console.log("成功");
+            // console.log("成功");
             resolve(json.data);
             break;
           default:
@@ -99,10 +99,9 @@ function get(options, final) {
 function post(obj, final) {
   let options = mixin;
   options = Object.assign({}, options, obj);
-  let params = Object.assign({}, para, obj.para);
   return new Promise((resolve, reject) => {
     axios
-      .post(options.baseUrl + options.url, params, {
+      .post(options.baseUrl + options.url, options.para, {
         headers: options.header,
         timeout: options.timeout,
         withCredentials: options.withCredentials
