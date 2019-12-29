@@ -1,0 +1,19 @@
+{
+  "name": "hbooker-extractor-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zsakvo",
+  "license": "ISC",
+  "dependencies": {
+    "http-proxy-middleware": "^0.20.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-static": "^5.0.0",
+    "koa2-connect": "^1.0.2",
+    "koa2-cors": "^2.0.6"
+  }
+}

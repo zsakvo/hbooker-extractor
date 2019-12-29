@@ -1,7 +1,7 @@
 import axios from "axios";
 import decrypt from "../plugins/decrypt";
 const mixin = {
-  baseUrl: "http://127.0.0.1:9527/api", //url前缀
+  baseUrl: "/api", //url前缀
   standardFlag: true,
   timeout: 15000,
   withCredentials: false //跨域请求是否使用凭证
