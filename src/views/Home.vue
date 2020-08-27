@@ -20,7 +20,7 @@
         <img :src="avatarImage" />
       </div>
     </div>
-    <div class="books-wrapper" ref="wrapper">
+    <div class="books-wrapper" ref="wrapper" v-if="books.length !== 0">
       <div class="book-wrapper" v-for="(book, index) in books" :key="index">
         <div class="book" @click="clickBook(book)" v-if="book.book_info != 0">
           <img :src="book.book_info.cover" alt="" />
@@ -34,6 +34,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="no-books" v-else>
+      空空如也呢……
     </div>
   </div>
 </template>
@@ -72,26 +75,13 @@ export default {
         para: {
           login_token: this.loginToken,
           account: this.account,
-          count: 100,
+          count: 999,
           shelf_id: shelfId,
           page: 0,
           order: 'last_read_time'
         }
       }).then(res => {
         let books = res.book_list
-        let bookNum = res.book_list.length
-        let wrapperWidth = this.$refs.wrapper.clientWidth - 207
-        let itemWidth = 444
-        let max = parseInt(wrapperWidth / itemWidth)
-        let addNum = max - (bookNum % max)
-        for (var i = 0; i < addNum; i++) {
-          books = [
-            ...books,
-            {
-              book_info: 0
-            }
-          ]
-        }
         this.books = books
       })
     })
@@ -290,6 +280,12 @@ export default {
     //   justify-content flex-start
     //   padding-left 96px
     // }
+  }
+
+  .no-books{
+    padding-top 120px
+    margin-left 48px
+    font-size 14px
   }
 }
 </style>
