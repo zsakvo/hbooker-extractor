@@ -225,6 +225,9 @@ export default {
     font-size 18px
     font-weight 600
     padding 24px 48px
+    position: fixed;
+    background: #fff;
+    width: 100%;
     .title{
       cursor pointer
     }
@@ -240,14 +243,14 @@ export default {
   }
   .books-wrapper{
     user-select none
-    padding 0 96px
+    padding 100px 48px 48px 48px
     display: flex;
     flex-wrap wrap
     width 100%
     .book-wrapper{
-      height 200px
+      height 120px
       width 100%
-      margin 0 12px
+      margin-bottom 32px
       display flex
       align-items center
       .book{
