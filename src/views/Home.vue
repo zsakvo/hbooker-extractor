@@ -1,12 +1,6 @@
 <template>
   <div class="home">
-    <at-modal
-      v-model="modal"
-      :title="dlName"
-      :maskClosable="false"
-      :closeOnPressEsc="false"
-      :showClose="canDl"
-    >
+    <at-modal v-model="modal" :title="dlName" :maskClosable="false" :closeOnPressEsc="false" :showClose="canDl">
       <div>
         <div class="dl-info">
           <p>正在获取分卷信息……共 {{ divisionNum }} 卷</p>
@@ -15,9 +9,7 @@
         </div>
       </div>
       <div slot="footer">
-        <at-button type="primary" :disabled="!canDl" @click="dlBook">{{
-          dlButton
-        }}</at-button>
+        <at-button type="primary" :disabled="!canDl" @click="dlBook">{{ dlButton }}</at-button>
       </div>
     </at-modal>
     <div class="nav-wrapper">
@@ -36,15 +28,9 @@
             <div class="book-name">
               {{ book.book_info.book_name }}
             </div>
-            <div class="book-author">
-              作者：{{ book.book_info.author_name }}
-            </div>
-            <div class="chapter-nums">
-              章节数：{{ book.book_info.last_chapter_info.chapter_index }} 章
-            </div>
-            <div class="last-time">
-              上次更新时间：{{ book.book_info.last_chapter_info.uptime }}
-            </div>
+            <div class="book-author">作者：{{ book.book_info.author_name }}</div>
+            <div class="chapter-nums">章节数：{{ book.book_info.last_chapter_info.chapter_index }} 章</div>
+            <div class="last-time">上次更新时间：{{ book.book_info.last_chapter_info.uptime }}</div>
           </div>
         </div>
       </div>
@@ -54,175 +40,175 @@
 
 <script>
 // @ is an alias to /src
-import GBWorker from "worker-loader!../work/gb.work";
+import GBWorker from 'worker-loader!../work/gb.work'
 
 export default {
-  name: "home",
+  name: 'home',
   components: {},
   created() {
     //获取本地用户信息
-    var accountInfo = localStorage.getItem("accountInfo");
+    var accountInfo = localStorage.getItem('accountInfo')
     if (accountInfo == null) {
-      this.$router.push("/login");
-      return;
+      this.$router.push('/login')
+      return
     }
-    var accountJson = JSON.parse(accountInfo);
-    var readInfo = accountJson.reader_info;
-    var avatarImage = readInfo.avatar_url;
-    this.loginToken = accountJson.login_token;
-    this.account = readInfo.account;
-    this.avatarImage = avatarImage;
+    var accountJson = JSON.parse(accountInfo)
+    var readInfo = accountJson.reader_info
+    var avatarImage = readInfo.avatar_url
+    this.loginToken = accountJson.login_token
+    this.account = readInfo.account
+    this.avatarImage = avatarImage
     //获取书架
     this.$get({
-      url: "/bookshelf/get_shelf_list",
+      url: '/bookshelf/get_shelf_list',
       para: {
         login_token: this.loginToken,
         account: this.account
       }
     }).then(res => {
-      let shelfId = res.shelf_list[0].shelf_id;
+      let shelfId = res.shelf_list[0].shelf_id
       this.$get({
-        url: "/bookshelf/get_shelf_book_list_new",
+        url: '/bookshelf/get_shelf_book_list_new',
         para: {
           login_token: this.loginToken,
           account: this.account,
           count: 100,
           shelf_id: shelfId,
           page: 0,
-          order: "last_read_time"
+          order: 'last_read_time'
         }
       }).then(res => {
-        let books = res.book_list;
-        let bookNum = res.book_list.length;
-        let wrapperWidth = this.$refs.wrapper.clientWidth - 207;
-        let itemWidth = 444;
-        let max = parseInt(wrapperWidth / itemWidth);
-        let addNum = max - (bookNum % max);
+        let books = res.book_list
+        let bookNum = res.book_list.length
+        let wrapperWidth = this.$refs.wrapper.clientWidth - 207
+        let itemWidth = 444
+        let max = parseInt(wrapperWidth / itemWidth)
+        let addNum = max - (bookNum % max)
         for (var i = 0; i < addNum; i++) {
           books = [
             ...books,
             {
               book_info: 0
             }
-          ];
+          ]
         }
-        this.books = books;
-      });
-    });
+        this.books = books
+      })
+    })
   },
   data() {
     return {
-      loginToken: "",
-      account: "",
+      loginToken: '',
+      account: '',
       modal: false,
-      avatarImage: "",
+      avatarImage: '',
       shelfs: [],
       books: [],
-      dlName: "",
-      dlprogress: "",
+      dlName: '',
+      dlprogress: '',
       divisionNum: 0,
       chapterNum: 0,
-      dlProgressText: "",
-      dlButton: "",
+      dlProgressText: '',
+      dlButton: '',
       canDl: false,
-      dlUrl: ""
-    };
+      dlUrl: ''
+    }
   },
   methods: {
     goLogin() {
-      this.$router.push("/login");
+      this.$router.push('/login')
     },
     goGit() {
-      window.open("https://github.com/zsakvo/hbooker-extractor");
+      window.open('https://github.com/zsakvo/hbooker-extractor')
     },
     async clickBook(book) {
-      let that = this;
-      that.canDl = false;
-      that.dlButton = "请稍后";
-      this.chapterNum = 0;
-      this.dlName = book.book_info.book_name;
-      that.chapterNum = 0;
-      that.dlProgressText = "";
-      this.modal = true;
+      let that = this
+      that.canDl = false
+      that.dlButton = '请稍后'
+      this.chapterNum = 0
+      this.dlName = book.book_info.book_name
+      that.chapterNum = 0
+      that.dlProgressText = ''
+      this.modal = true
       //获取书籍 ID
-      let bid = book.book_info.book_id;
+      let bid = book.book_info.book_id
       //获取分卷 ID （全部）
-      let divisionData = await this.getDivision(bid);
-      this.divisionNum = divisionData.length;
+      let divisionData = await this.getDivision(bid)
+      this.divisionNum = divisionData.length
       //循环分卷，取出全部章节
-      let allCahpters = [];
+      let allCahpters = []
       for (var division of divisionData) {
-        let divisionID = division.division_id;
-        let chapters = await this.getChapter(divisionID);
-        allCahpters.push(...chapters);
+        let divisionID = division.division_id
+        let chapters = await this.getChapter(divisionID)
+        allCahpters.push(...chapters)
       }
-      that.chapterNum = allCahpters.length;
-      var worker = new GBWorker();
+      that.chapterNum = allCahpters.length
+      var worker = new GBWorker()
       worker.postMessage({
-        cmd: "begin",
+        cmd: 'begin',
         loginToken: this.loginToken,
         account: this.account,
         para: allCahpters
-      });
+      })
       worker.onmessage = function(evt) {
-        let msg = evt.data.msg;
-        let content = evt.data.content;
+        let msg = evt.data.msg
+        let content = evt.data.content
         switch (msg) {
-          case "chapter_complete":
-            that.dlProgressText = `${content}/${that.chapterNum}`;
-            break;
-          case "all_complete":
-            var blob = new Blob([content]);
-            that.dlUrl = URL.createObjectURL(blob);
-            that.canDl = true;
-            that.dlButton = "下载到本地";
-            that.dlBook();
-            worker.terminate();
-            break;
+          case 'chapter_complete':
+            that.dlProgressText = `${content}/${that.chapterNum}`
+            break
+          case 'all_complete':
+            var blob = new Blob([content])
+            that.dlUrl = URL.createObjectURL(blob)
+            that.canDl = true
+            that.dlButton = '下载到本地'
+            that.dlBook()
+            worker.terminate()
+            break
         }
-      };
+      }
     },
     async getDivision(bid) {
       return await this.$get({
-        url: "/book/get_division_list",
+        url: '/book/get_division_list',
         para: {
           login_token: this.loginToken,
           account: this.account,
           book_id: bid
         }
       }).then(res => {
-        let divisionData = res.division_list;
-        return divisionData;
-      });
+        let divisionData = res.division_list
+        return divisionData
+      })
     },
     async getChapter(did) {
-      var params = new URLSearchParams();
-      params.append("last_update_time", 0);
-      params.append("login_token", this.loginToken);
-      params.append("account", this.account);
-      params.append("division_id", did);
-      params.append("app_version", "2.3.020");
-      params.append("device_token", "ciweimao_powered_by_zsakvo_with_vue");
+      var params = new URLSearchParams()
+      params.append('last_update_time', 0)
+      params.append('login_token', this.loginToken)
+      params.append('account', this.account)
+      params.append('division_id', did)
+      params.append('app_version', '2.3.020')
+      params.append('device_token', 'ciweimao_powered_by_zsakvo_with_vue')
       return await this.$post({
-        url: "/chapter/get_updated_chapter_by_division_id",
-        header: { "Content-Type": "application/x-www-form-urlencoded" },
+        url: '/chapter/get_updated_chapter_by_division_id',
+        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
         para: params
       }).then(res => {
-        let chaptersData = res.chapter_list;
-        return chaptersData;
-      });
+        let chaptersData = res.chapter_list
+        return chaptersData
+      })
     },
     dlBook() {
-      var eleLink = document.createElement("a");
-      eleLink.download = this.dlName + ".txt";
-      eleLink.style.display = "none";
-      eleLink.href = this.dlUrl;
-      document.body.appendChild(eleLink);
-      eleLink.click();
-      document.body.removeChild(eleLink);
+      var eleLink = document.createElement('a')
+      eleLink.download = this.dlName + '.txt'
+      eleLink.style.display = 'none'
+      eleLink.href = this.dlUrl
+      document.body.appendChild(eleLink)
+      eleLink.click()
+      document.body.removeChild(eleLink)
     }
   }
-};
+}
 </script>
 
 <style lang="stylus" scoped>
@@ -257,12 +243,10 @@ export default {
     padding 0 96px
     display: flex;
     flex-wrap wrap
-    justify-content space-between
     width 100%
-    // grid-template-columns: 50% 50%
     .book-wrapper{
       height 200px
-      width 420px
+      width 100%
       margin 0 12px
       display flex
       align-items center
