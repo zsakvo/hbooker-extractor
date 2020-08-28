@@ -36,8 +36,11 @@
         </at-dropdown>
       </div>
     </div>
-    <div class="table-wrapper">
+    <div class="table-wrapper" v-if="!isLoading">
       <at-table :columns="columns" :data="booksData" stripe></at-table>
+    </div>
+    <div class="loading" v-else>
+      加载中……
     </div>
     <!-- <div class="books-wrapper" ref="wrapper" v-if="books.length !== 0">
       <div class="book-wrapper" v-for="(book, index) in books" :key="index">
@@ -120,6 +123,9 @@ export default {
           arr.push(obj)
         })
         this.booksData = arr
+        this.$nextTick(() => {
+          this.isLoading = false
+        })
       })
     })
   },
@@ -176,7 +182,8 @@ export default {
       booksData: [],
       readInfo: {},
       currentShelf: '',
-      shelves: ''
+      shelves: '',
+      isLoading: true
     }
   },
   methods: {
@@ -192,6 +199,7 @@ export default {
       if (this.currentShelf['shelf_id'] === 'login') {
         this.goLogin()
       } else {
+        this.isLoading = true
         this.$get({
           url: '/bookshelf/get_shelf_book_list_new',
           para: {
@@ -215,6 +223,9 @@ export default {
             arr.push(obj)
           })
           this.booksData = arr
+          this.$nextTick(() => {
+            this.isLoading = false
+          })
         })
       }
     },
@@ -320,7 +331,7 @@ export default {
     height 64px
     justify-content space-between
     align-items center
-    font-size 16px
+    font-size 14px
     font-weight 600
     padding 0 36px
     position: fixed;
@@ -402,6 +413,11 @@ export default {
     >>>.option-download{
       cursor pointer
     }
+  }
+
+  .loading{
+    padding 64px 32px
+    height 80vh
   }
 }
 </style>
