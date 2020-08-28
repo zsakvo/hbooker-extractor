@@ -16,11 +16,20 @@
       <div class="title" @click="goGit">
         HBooker Extractor
       </div>
-      <div class="avatar-wrapper" @click="goLogin">
+      <!-- <div class="avatar-wrapper" @click="goLogin">
         <img :src="avatarImage" />
+      </div> -->
+      <div class="need-login" v-if="!readInfo['reader_name']">
+        未登录
+      </div>
+      <div class="shelves" v-else>
+        xxx
       </div>
     </div>
-    <div class="books-wrapper" ref="wrapper" v-if="books.length !== 0">
+    <div class="table-wrapper">
+      <at-table :columns="columns" :data="booksData" stripe></at-table>
+    </div>
+    <!-- <div class="books-wrapper" ref="wrapper" v-if="books.length !== 0">
       <div class="book-wrapper" v-for="(book, index) in books" :key="index">
         <div class="book" @click="clickBook(book)" v-if="book.book_info != 0">
           <img :src="book.book_info.cover" alt="" />
@@ -34,10 +43,10 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="no-books" v-else>
+    </div> -->
+    <!-- <div class="no-books" v-else>
       空空如也呢……
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -57,6 +66,8 @@ export default {
     }
     var accountJson = JSON.parse(accountInfo)
     var readInfo = accountJson.reader_info
+    console.log(readInfo)
+    this.readInfo = readInfo
     var avatarImage = readInfo.avatar_url
     this.loginToken = accountJson.login_token
     this.account = readInfo.account
@@ -83,6 +94,16 @@ export default {
       }).then(res => {
         let books = res.book_list
         this.books = books
+        let arr = []
+        books.forEach(book => {
+          let obj = {
+            name: book.book_info.book_name,
+            author: book.book_info.author_name,
+            date: book.book_info.last_chapter_info.uptime
+          }
+          arr.push(obj)
+        })
+        this.booksData = arr
       })
     })
   },
@@ -101,7 +122,43 @@ export default {
       dlProgressText: '',
       dlButton: '',
       canDl: false,
-      dlUrl: ''
+      dlUrl: '',
+      columns: [
+        {
+          title: '书名',
+          key: 'name'
+        },
+        {
+          title: '作者',
+          key: 'author'
+        },
+        {
+          title: '更新日期',
+          key: 'date'
+        },
+        {
+          title: '操作',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'div',
+                {
+                  class: 'option-download',
+                  // style: {
+                  //   marginRight: '8px'
+                  // },
+                  on: {
+                    click: () => this.clickBook(this.books[params['index']])
+                  }
+                },
+                '下载'
+              )
+            ])
+          }
+        }
+      ],
+      booksData: [],
+      readInfo: {}
     }
   },
   methods: {
@@ -210,11 +267,12 @@ export default {
   }
   .nav-wrapper{
     display flex
+    height 64px
     justify-content space-between
     align-items center
-    font-size 18px
+    font-size 16px
     font-weight 600
-    padding 24px 48px
+    padding 0 36px
     position: fixed;
     background: #fff;
     width: 100%;
@@ -286,6 +344,13 @@ export default {
     padding-top 120px
     margin-left 48px
     font-size 14px
+  }
+
+  .table-wrapper{
+    padding: 64px 32px 0 32px;
+    >>>.option-download{
+      cursor pointer
+    }
   }
 }
 </style>
