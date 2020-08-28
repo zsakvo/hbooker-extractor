@@ -23,7 +23,17 @@
         未登录
       </div>
       <div class="shelves" v-else>
-        xxx
+        <at-dropdown @on-dropdown-command="switchShelf">
+          <span>
+            {{ currentShelf['shelf_name'] }}
+            <i class="icon icon-chevron-down"></i>
+          </span>
+          <at-dropdown-menu slot="menu" class="shelf-menu">
+            <at-dropdown-item v-for="(shelf, index) in shelves" :key="shelf['shelf_id']" :name="index">
+              {{ shelf['shelf_name'] }}
+            </at-dropdown-item>
+          </at-dropdown-menu>
+        </at-dropdown>
       </div>
     </div>
     <div class="table-wrapper">
@@ -80,7 +90,13 @@ export default {
         account: this.account
       }
     }).then(res => {
-      let shelfId = res.shelf_list[0].shelf_id
+      this.shelves = res.shelf_list
+      this.shelves.push({
+        shelf_id: 'login',
+        shelf_name: '切换账号'
+      })
+      this.currentShelf = this.shelves[0]
+      let shelfId = this.currentShelf.shelf_id
       this.$get({
         url: '/bookshelf/get_shelf_book_list_new',
         para: {
@@ -158,7 +174,9 @@ export default {
         }
       ],
       booksData: [],
-      readInfo: {}
+      readInfo: {},
+      currentShelf: '',
+      shelves: ''
     }
   },
   methods: {
@@ -167,6 +185,38 @@ export default {
     },
     goGit() {
       window.open('https://github.com/zsakvo/hbooker-extractor')
+    },
+    switchShelf(index) {
+      this.currentShelf = this.shelves[index]
+      console.log(this.currentShelf)
+      if (this.currentShelf['shelf_id'] === 'login') {
+        this.goLogin()
+      } else {
+        this.$get({
+          url: '/bookshelf/get_shelf_book_list_new',
+          para: {
+            login_token: this.loginToken,
+            account: this.account,
+            count: 999,
+            shelf_id: this.currentShelf['shelf_id'],
+            page: 0,
+            order: 'last_read_time'
+          }
+        }).then(res => {
+          let books = res.book_list
+          this.books = books
+          let arr = []
+          books.forEach(book => {
+            let obj = {
+              name: book.book_info.book_name,
+              author: book.book_info.author_name,
+              date: book.book_info.last_chapter_info.uptime
+            }
+            arr.push(obj)
+          })
+          this.booksData = arr
+        })
+      }
     },
     async clickBook(book) {
       let that = this
@@ -276,6 +326,7 @@ export default {
     position: fixed;
     background: #fff;
     width: 100%;
+    z-index: 200;
     .title{
       cursor pointer
     }
@@ -347,7 +398,7 @@ export default {
   }
 
   .table-wrapper{
-    padding: 64px 32px 0 32px;
+    padding: 64px 32px
     >>>.option-download{
       cursor pointer
     }
