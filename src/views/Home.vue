@@ -16,9 +16,6 @@
       <div class="title" @click="goGit">
         HBooker Extractor
       </div>
-      <!-- <div class="avatar-wrapper" @click="goLogin">
-        <img :src="avatarImage" />
-      </div> -->
       <div class="need-login" v-if="!readInfo['reader_name']">
         未登录
       </div>
@@ -42,24 +39,6 @@
     <div class="loading" v-else>
       加载中……
     </div>
-    <!-- <div class="books-wrapper" ref="wrapper" v-if="books.length !== 0">
-      <div class="book-wrapper" v-for="(book, index) in books" :key="index">
-        <div class="book" @click="clickBook(book)" v-if="book.book_info != 0">
-          <img :src="book.book_info.cover" alt="" />
-          <div class="book-info">
-            <div class="book-name">
-              {{ book.book_info.book_name }}
-            </div>
-            <div class="book-author">作者：{{ book.book_info.author_name }}</div>
-            <div class="chapter-nums">章节数：{{ book.book_info.last_chapter_info.chapter_index }} 章</div>
-            <div class="last-time">上次更新时间：{{ book.book_info.last_chapter_info.uptime }}</div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <!-- <div class="no-books" v-else>
-      空空如也呢……
-    </div> -->
   </div>
 </template>
 
@@ -166,9 +145,6 @@ export default {
                 'div',
                 {
                   class: 'option-download',
-                  // style: {
-                  //   marginRight: '8px'
-                  // },
                   on: {
                     click: () => this.clickBook(this.books[params['index']])
                   }
@@ -341,67 +317,7 @@ export default {
     .title{
       cursor pointer
     }
-    .avatar-wrapper{
-      width 50px
-      height 50px
-      img{
-        width 100%
-        height 100%
-        border-radius:50%
-      }
-    }
   }
-  .books-wrapper{
-    user-select none
-    padding 100px 48px 48px 48px
-    display: flex;
-    flex-wrap wrap
-    width 100%
-    .book-wrapper{
-      height 120px
-      width 100%
-      margin-bottom 32px
-      display flex
-      align-items center
-      .book{
-        display flex
-        height fit-content
-        width fit-content
-        align-items center
-        img{
-          width 90px
-          height 120px
-        }
-        .book-info{
-          height 120px
-          margin-left 16px
-          display flex
-          flex-direction column
-          justify-content space-between
-          .book-name{
-            font-size 15px
-            font-weight 500
-            line-height 2.0
-          }
-          .book-author{
-
-          }
-          .chapter-nums{
-
-          }
-        }
-      }
-    }
-    // .book-wrapper:nth-child(n){
-    //   justify-content flex-end
-    //   padding-right 96px
-    // }
-    // .book-wrapper:nth-child(2n){
-    //   justify-content flex-start
-    //   padding-left 96px
-    // }
-  }
-
   .no-books{
     padding-top 120px
     margin-left 48px
