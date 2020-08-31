@@ -140,18 +140,39 @@ export default {
         {
           title: '操作',
           render: (h, params) => {
-            return h('div', [
-              h(
-                'div',
-                {
-                  class: 'option-download',
-                  on: {
-                    click: () => this.clickBook(this.books[params['index']])
-                  }
-                },
-                '下载'
-              )
-            ])
+            return h(
+              'div',
+              {
+                style: {
+                  display: 'flex'
+                }
+              },
+              [
+                h(
+                  'div',
+                  {
+                    class: 'option-click go-detail',
+                    on: {
+                      click: () => this.goDetail(this.books[params['index']])
+                    }
+                  },
+                  '详情'
+                ),
+                h(
+                  'div',
+                  {
+                    class: 'option-click option-download',
+                    style: {
+                      marginLeft: '8px'
+                    },
+                    on: {
+                      click: () => this.clickBook(this.books[params['index']])
+                    }
+                  },
+                  '下载'
+                )
+              ]
+            )
           }
         }
       ],
@@ -168,6 +189,9 @@ export default {
     },
     goGit() {
       window.open('https://github.com/zsakvo/hbooker-extractor')
+    },
+    goDetail(book) {
+      window.open('https://www.ciweimao.com/book/' + book['book_info']['book_id'])
     },
     switchShelf(index) {
       this.currentShelf = this.shelves[index]
@@ -326,7 +350,7 @@ export default {
 
   .table-wrapper{
     padding: 64px 32px
-    >>>.option-download{
+    >>>.option-click{
       cursor pointer
     }
   }
