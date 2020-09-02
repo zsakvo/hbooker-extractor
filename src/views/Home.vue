@@ -303,7 +303,12 @@ export default {
         header: { 'Content-Type': 'application/x-www-form-urlencoded' },
         para: params
       }).then(res => {
-        let chaptersData = res.chapter_list
+        let chaptersData = res.chapter_list.map(l => {
+          if (l['is_valid'] == '1') {
+            return l
+          }
+        })
+        console.log(chaptersData)
         return chaptersData
       })
     },
