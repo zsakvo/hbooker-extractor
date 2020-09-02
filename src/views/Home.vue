@@ -72,6 +72,7 @@ export default {
         account: this.account
       }
     }).then(res => {
+      console.log(res)
       this.shelves = res.shelf_list
       this.shelves.push({
         shelf_id: 'login',
