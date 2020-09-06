@@ -13,6 +13,7 @@ const para = {
 var loginToken;
 var account;
 var book = "";
+var bookOutOfOrder = [];
 var chapterNum = 0;
 // 响应父线程的消息
 self.addEventListener("message", async event => {
@@ -22,24 +23,40 @@ self.addEventListener("message", async event => {
   account = event.data.account;
   switch (cmd) {
     case "begin":
-      for (var chapter of para) {
-        let cid = chapter.chapter_id;
-        let key = await getChapterKey(cid);
-        let content = await getChapterContent(cid, key);
-        let chapterInfo = content.chapter_info;
-        if (Object.keys(chapterInfo).length != 0) {
-          let contentTitle = chapterInfo.chapter_title;
-          let contentText = chapterInfo.txt_content;
-          let decryptContent = decrypt(contentText, key);
-          book += contentTitle + "\n" + decryptContent + "\n\n\n";
-        }
-        chapterNum++;
-        self.postMessage({ msg: "chapter_complete", content: chapterNum });
+      for (let i = 0; i < para.length; i++) {
+        const chapter = para[i];
+        getChapter(chapter, i, para.length);
       }
-      self.postMessage({ msg: "all_complete", content: book });
       break;
   }
 });
+
+var getChapter = async function(chapter, i, length) {
+  try {
+    let key = await getChapterKey(chapter.chapter_id);
+    let content = await getChapterContent(chapter.chapter_id, key);
+    let chapterInfo = content.chapter_info;
+    if (Object.keys(chapterInfo).length != 0) {
+      let contentTitle = chapterInfo.chapter_title;
+      let contentText = chapterInfo.txt_content;
+      let decryptContent = decrypt(contentText, key);
+      bookOutOfOrder[i] = contentTitle + "\n" + decryptContent + "\n\n\n";
+    } else {
+      throw new Error("Failed to get chapter info");
+    }
+  } catch (e) {
+    bookOutOfOrder[i] = "download failed\n";
+    console.error(e);
+  }
+  chapterNum++;
+  self.postMessage({ msg: "chapter_complete", content: chapterNum });
+  if (chapterNum === length) {
+    for (let ii = 0; ii < length; ii++) {
+      book += bookOutOfOrder[ii];
+    }
+    self.postMessage({ msg: "all_complete", content: book });
+  }
+};
 
 var getChapterKey = async function(cid) {
   return await get({
