@@ -1,12 +1,12 @@
 module.exports = {
-  presets: ["@vue/cli-plugin-babel/preset"],
+  presets: ['@vue/cli-plugin-babel/preset'],
   plugins: [
     [
-      "import",
+      'import',
       {
-        libraryName: "at",
-        libraryDirectory: "src/components"
+        libraryName: 'at',
+        libraryDirectory: 'src/components'
       }
     ]
   ]
-};
+}

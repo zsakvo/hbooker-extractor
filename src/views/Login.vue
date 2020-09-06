@@ -4,25 +4,12 @@
       <div class="login-title">
         HBooker Extractor
       </div>
-      <at-input
-        v-model="account"
-        placeholder="用户名"
-        icon="user"
-        class="input-account"
-      ></at-input>
-      <at-input
-        v-model="password"
-        placeholder="密码"
-        icon="lock"
-        type="password"
-        class="input-password"
-      ></at-input>
+      <at-input v-model="account" placeholder="用户名" icon="user" class="input-account"></at-input>
+      <at-input v-model="password" placeholder="密码" icon="lock" type="password" class="input-password"></at-input>
     </div>
     <div class="button-wrapper">
       <div class="login-button">
-        <at-button type="primary" @click="login" :disabled="canLogin"
-          >刺猬猫账户登陆</at-button
-        >
+        <at-button type="primary" @click="login" :disabled="canLogin">刺猬猫账户登陆</at-button>
       </div>
     </div>
   </div>
@@ -32,17 +19,17 @@
 export default {
   data() {
     return {
-      account: "",
-      password: "",
+      account: '',
+      password: '',
       canLogin: false
-    };
+    }
   },
   methods: {
     login() {
-      this.canLogin = true;
+      this.canLogin = true
       this.$get(
         {
-          url: "/signup/login",
+          url: '/signup/login',
           para: {
             login_name: this.account,
             passwd: this.password
@@ -50,26 +37,26 @@ export default {
         },
         // eslint-disable-next-line no-unused-vars
         () => {
-          this.canLogin = false;
+          this.canLogin = false
         }
       ).then(
         res => {
-          localStorage.setItem("account", this.account);
-          localStorage.setItem("password", this.password);
-          localStorage.setItem("accountInfo", JSON.stringify(res));
-          this.$router.push("/");
+          localStorage.setItem('account', this.account)
+          localStorage.setItem('password', this.password)
+          localStorage.setItem('accountInfo', JSON.stringify(res))
+          this.$router.push('/')
         },
         // eslint-disable-next-line no-unused-vars
         err => {
-          this.canLogin = false;
+          this.canLogin = false
         },
         () => {
-          this.canLogin = false;
+          this.canLogin = false
         }
-      );
+      )
     }
   }
-};
+}
 </script>
 
 <style lang="stylus" scoped>
